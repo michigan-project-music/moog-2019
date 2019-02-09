@@ -30,6 +30,7 @@ int PIN_VCA = 5;
 int PIN_VCF = 4;
 int PIN_VCO = 0;
 int PIN_LFO = 2;
+int PIN_GATE = 14;
 
 void setup() {
   Serial.begin(115200);
@@ -44,40 +45,70 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
+  pinMode(PIN_GATE, OUTPUT);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.stream("/");  
 }
 
 int end_time = 0;
 int start_time = 0;
 bool playing = false;
+int duration = 0;
+float VCA = 0;
+float VCO = 0;
+float VCF = 0;
+float LFO = 0;
 
 void loop() {
-  // set value
-  FirebaseObject root = Firebase.get("/");
   if (Firebase.failed()) {
-      Serial.print("getting VCA failed:");
-      Serial.println(Firebase.error());  
-      return;
+    Serial.println("streaming error");
+    Serial.println(Firebase.error());
   }
-  float VCA = convertVoltage(root.getFloat("VCA/value"));
-  float VCF = convertVoltage(root.getFloat("VCF/value"));
-  float VCO = convertVoltage(root.getFloat("VCO/value"));
-  float LFO = convertVoltage(root.getFloat("LFO/value"));
-  int duration = root.getInt("/duration/value");
-  analogWrite(PIN_VCA, VCA);
-  analogWrite(PIN_VCF, VCF);
-  analogWrite(PIN_LFO, LFO);
-  if (!playing) {
+  
+  if (Firebase.available()) {
+      FirebaseObject event = Firebase.readEvent();
+      String path = event.getString("path");
+      if (path == "/duration/value") {
+        duration = event.getInt("data");
+        Serial.print("DUR: ");
+        Serial.println(duration);
+      }
+      else if (path == "/VCA/value") {
+        VCA = convertVoltage(event.getFloat("data"));
+        Serial.print("VCA: ");
+        Serial.println(VCA);
+      }
+      else if (path == "/VCF/value") {
+        VCF = convertVoltage(event.getFloat("data"));
+        Serial.print("VCF: ");
+        Serial.println(VCF);
+      }
+      else if (path == "/VCO/value") {
+        VCO = convertVoltage(event.getFloat("data"));
+        Serial.print("VCO: ");
+        Serial.println(VCO);
+      }
+      else if (path == "/LFO/value") {
+        LFO = convertVoltage(event.getFloat("data"));
+        Serial.print("LFO: ");
+        Serial.println(LFO);
+      }
+      analogWrite(PIN_VCO, VCO);
+      analogWrite(PIN_VCA, VCA);
+      analogWrite(PIN_VCF, VCF);
+      analogWrite(PIN_LFO, LFO);
+  }   
+    
+  if (!playing && duration > 0) {
     playing = true;
     end_time = millis() + duration;
-    analogWrite(PIN_VCO, VCO);
     digitalWrite(PIN_GATE, HIGH);
   }
   if (playing && millis() >= end_time) {
     playing = false;
     end_time = 0;
     digitalWrite(PIN_GATE, LOW);
+    Firebase.setInt("/duration/value", 0);
   }
 }
 
