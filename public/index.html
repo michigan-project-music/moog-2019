@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -7,6 +10,144 @@
 <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script>	
 </head>
+
+<style>
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.container img {
+  width: 100%;
+  height: auto;
+}
+
+.container .btn {
+  position: absolute;
+  top: 82.5%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #d9d9d9;
+  color: black;
+  font-size: 16px;
+  width: 5%;
+  height: 27.5%;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.black_btn {
+  position: absolute;
+  top: 42.5%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #4C4C4C;
+  color: white;
+  font-size: 16px;
+  width: 2.5%;
+  height: 45%;
+  padding: 4px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.black_btn:hover {
+  background-color: #707070;
+}
+
+.container .btn:hover {
+	
+  background-color: #cccccc;
+}
+
+#c_key { 
+  left: 6%;
+}
+
+#d_key { 
+  left: 21%;
+}
+
+#e_key { 
+  left: 35%;
+}
+
+#f_key { 
+  left: 49.5%;
+}
+
+#g_key { 
+  left: 64%;
+}
+
+#a_key { 
+  left: 78.5%;
+}
+
+#b_key { 
+  left: 92.75%;
+}
+
+#c_sharp_key { 
+  left: 13.75%;
+}
+
+#d_sharp_key { 
+  left: 28%;
+}
+
+#f_sharp_key { 
+  left: 56.75%;
+}
+
+#g_sharp_key { 
+  left: 71.25%;
+}
+
+#a_sharp_key { 
+  left: 85.5%;
+}
+
+</style>
+
+
+<div class="container">
+
+  <p id = "note"> Note: C </p>
+  <p id = "octave"> Octave: First </p>
+
+
+  <img src="piano.jpeg" alt="Snow">
+
+  <button class="btn" id = "c_key" onclick="change_text('C')">C</button>
+  <button class="btn" id = "d_key" onclick="change_text('D')"">D</button>
+  <button class="btn" id = "e_key" onclick="change_text('E')"">E</button>
+  <button class="btn" id = "f_key" onclick="change_text('F')"">F</button>
+  <button class="btn" id = "g_key" onclick="change_text('G')"">G</button>
+  <button class="btn" id = "a_key" onclick="change_text('A')"">A</button>
+  <button class="btn" id = "b_key" onclick="change_text('B')"">B</button>
+
+    <button class="black_btn" id = "c_sharp_key" onclick="change_text('C# / D♭')"></button>
+    <button class="black_btn" id = "d_sharp_key" onclick="change_text('D# / E♭')"></button>
+    <button class="black_btn" id = "f_sharp_key" onclick="change_text('F# / G♭')"></button>
+    <button class="black_btn" id = "g_sharp_key" onclick="change_text('G# / A♭')"></button>
+    <button class="black_btn" id = "a_sharp_key" onclick="change_text('A# / B♭')"></button>
+
+
+
+</div>
+
+  <button onclick="change_octave(1)">First Octave</button>
+  <button onclick="change_octave(2)">Second Octave</button>
+  <button onclick="change_octave(3)">Third Octave</button>
+
+
 
 <body>
 <div id="content">
@@ -37,6 +178,31 @@ test: <span id="test"></span>
 	firebase.initializeApp(config);
 	document.getElementById("timeStart").innerHTML = time_start;	
 	document.getElementById("currentTime").innerHTML = Date.now();	
+
+	var note = "C";
+	var octave = 1;
+
+	function change_text(val) {
+
+			note = val;
+		  document.getElementById("note").innerHTML = "Note: " + val;
+				
+	}
+
+	function change_octave(val) {
+
+		  octave = val;
+
+		 if (val == 1){
+		  document.getElementById("octave").innerHTML = "Octave: First";
+		}else if (val == 2){
+		 document.getElementById("octave").innerHTML = "Octave: Second";
+		}else{
+		document.getElementById("octave").innerHTML = "Octave: Third";
+
+		}
+				
+	}
 
 	if (window.DeviceMotionEvent != undefined) {
 		window.ondevicemotion = function(e) {
