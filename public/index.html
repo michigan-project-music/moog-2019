@@ -30,7 +30,8 @@
 </div>
 <script type="text/javascript">
 	const DURATION_MILLIS = 350;
-	SENSITIVITY = 5;
+	let SENSITIVITY = 5;
+	let playing = false;
 	let time_start = Number.MAX_SAFE_INTEGER - 2000;
 	var config = {
 	    apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
@@ -51,16 +52,17 @@
 			document.getElementById("accelerationZ").innerHTML = e.acceleration.z;	
 			document.getElementById("timeStart").innerHTML = time_start;	
 			document.getElementById("currentTime").innerHTML = Date.now();	
-			if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (Date.now() < (time_start + DURATION_MILLIS))) {
+			if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) {
 				time_start = Date.now();
+				playing = true;
 				document.body.style.backgroundColor = "red";
-				firebase.database().ref("VCO").set({
-					value: Math.random() * 3
+				firebase.database().ref("duration").set({
+					value: 300
 				})
 			}
-			else if (Date.now() >= time_start + DURATION_MILLIS) {
-				time_start = Number.MAX_SAFE_INTEGER - 2000;
+			else if (playing && (Date.now() >= time_start + DURATION_MILLIS)) {
 				document.body.style.backgroundColor = "white";
+				playing = false;
 			}
 		}
 	} 

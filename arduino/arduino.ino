@@ -68,28 +68,29 @@ void loop() {
   if (Firebase.available()) {
       FirebaseObject event = Firebase.readEvent();
       String path = event.getString("path");
-      if (path == "/duration/value") {
-        duration = event.getInt("data");
+      Serial.println(path);
+      if (path == "/duration") {
+        duration = event.getInt("data/value");
         Serial.print("DUR: ");
         Serial.println(duration);
       }
-      else if (path == "/VCA/value") {
-        VCA = convertVoltage(event.getFloat("data"));
+      else if (path == "/VCA") {
+        VCA = convertVoltage(event.getFloat("data/value"));
         Serial.print("VCA: ");
         Serial.println(VCA);
       }
-      else if (path == "/VCF/value") {
-        VCF = convertVoltage(event.getFloat("data"));
+      else if (path == "/VCF") {
+        VCF = convertVoltage(event.getFloat("data/value"));
         Serial.print("VCF: ");
         Serial.println(VCF);
       }
-      else if (path == "/VCO/value") {
-        VCO = convertVoltage(event.getFloat("data"));
+      else if (path == "/VCO") {
+        VCO = convertVoltage(event.getFloat("data/value"));
         Serial.print("VCO: ");
         Serial.println(VCO);
       }
-      else if (path == "/LFO/value") {
-        LFO = convertVoltage(event.getFloat("data"));
+      else if (path == "/LFO") {
+        LFO = convertVoltage(event.getFloat("data/value"));
         Serial.print("LFO: ");
         Serial.println(LFO);
       }
@@ -103,6 +104,7 @@ void loop() {
     playing = true;
     end_time = millis() + duration;
     digitalWrite(PIN_GATE, HIGH);
+    duration = 0;
   }
   if (playing && millis() >= end_time) {
     playing = false;
