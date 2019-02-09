@@ -23,10 +23,10 @@ class App extends Component {
       console.log("woww");
       var database = firebase.database();
 
-      firebase.database().ref('string').set({
+      firebase.database().ref('andrew').set({
 
         name: "kiran",
-        othername: "kirant"
+        othername: "kirdant"
 
       })
 
