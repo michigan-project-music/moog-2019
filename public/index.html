@@ -20,15 +20,16 @@
 	<li>current time: <span id="currentTime"></span>g</li>
 </ul>
 
-test: <span id="test"></span>
+<span id="slide"></span>
 </div>
 <div class="slidecontainer">
-  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-  <p>Value: <span id="sensitivity"></span></p>
+  <p><br><br></p>
+  <p>Sensitivity: <span id="sensitivity"></span></p>
+  <input type="range" min="0.1" max="10" value="4.5" step="0.1" class="slider" id="myRange">
 </div>
 <script type="text/javascript">
 	const DURATION_MILLIS = 350;
-	const SENSITIVITY = 4.5;
+	SENSITIVITY = 4.5;
 	let time_start = Number.MAX_SAFE_INTEGER - 2000;
 	var config = {
 	    apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
@@ -70,7 +71,9 @@ test: <span id="test"></span>
   // Update the current slider value (each time you drag the slider handle)
   slider.oninput = function() {
     output.innerHTML = this.value;
+    SENSITIVITY = this.value;
   }
+
 </script>
 
 </body>

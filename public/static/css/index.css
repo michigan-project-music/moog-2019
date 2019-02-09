@@ -1,5 +1,12 @@
 .slidecontainer {
-  width: 100%; /* Width of the outside container */
+  width: 100%; /*Width of the outside container*/
+  position: relative;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 40px;
+  display:flex;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* The slider itself */
@@ -7,7 +14,11 @@
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 25px; /* Specified height */
+  height: 25px;  Specified height;
+  /*height: 100%;*/
+  left: 0;
+  padding: 40px;
+  right: 0;
   background: #d3d3d3; /* Grey background */
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
