@@ -48,41 +48,37 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
-int n = 0;
+int end_time = 0;
+int start_time = 0;
+bool playing = false;
 
 void loop() {
   // set value
-  float VCA = convertVoltage(Firebase.getFloat("/VCA/value"));
+  FirebaseObject root = Firebase.get("/");
   if (Firebase.failed()) {
       Serial.print("getting VCA failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  float VCF = convertVoltage(Firebase.getFloat("/VCF/value"));
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("getting VCF failed:");
-      Serial.println(Firebase.error());  
-      return;
-  };
-  float VCO = convertVoltage(Firebase.getFloat("/VCO/value"));
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("getting VCO failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  float LFO = convertVoltage(Firebase.getFloat("/LFO/value"));
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("getting LFO failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
+  float VCA = convertVoltage(root.getFloat("VCA/value"));
+  float VCF = convertVoltage(root.getFloat("VCF/value"));
+  float VCO = convertVoltage(root.getFloat("VCO/value"));
+  float LFO = convertVoltage(root.getFloat("LFO/value"));
+  int duration = root.getInt("/duration/value");
   analogWrite(PIN_VCA, VCA);
   analogWrite(PIN_VCF, VCF);
-  analogWrite(PIN_VCO, VCO);
   analogWrite(PIN_LFO, LFO);
+  if (!playing) {
+    playing = true;
+    end_time = millis() + duration;
+    analogWrite(PIN_VCO, VCO);
+    digitalWrite(PIN_GATE, HIGH);
+  }
+  if (playing && millis() >= end_time) {
+    playing = false;
+    end_time = 0;
+    digitalWrite(PIN_GATE, LOW);
+  }
 }
 
 int convertVoltage(float voltage) {
