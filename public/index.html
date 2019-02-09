@@ -63,9 +63,17 @@
   <p>Sensitivity: <span id="sensitivity"></span></p>
   <input type="range" min="5" max="20" value="9" step="0.1" class="slider" id="myRange">
 </div>
+
+<div class="rotation">
+  <p>x: <span id="xPos"></span>degrees</p>
+  <p>y: <span id="yPos"></span>degrees</p>
+</div>
+
+
 <script type="text/javascript">
 	const DURATION_MILLIS = 350;
 	let SENSITIVITY = 9;
+  let CONDUCTOR = true;
 	let playing = false;
 	let time_start = Number.MAX_SAFE_INTEGER - 2000;
 	var config = {
@@ -80,6 +88,14 @@
 	document.getElementById("timeStart").innerHTML = time_start;	
 	document.getElementById("currentTime").innerHTML = Date.now();	
 
+var x = 0;
+var y = 0;
+var vx = 0;
+var vy = 0;
+var ax = 0;
+var ay = 0;
+
+var sphere = document.getElementById("sphere");
 
 
 	var note = "C";
@@ -104,6 +120,8 @@
 
 	if (window.DeviceMotionEvent != undefined) {
 		window.ondevicemotion = function(e) {
+      ax = event.accelerationIncludingGravity.x * 5;
+      ay = event.accelerationIncludingGravity.y * 5;
 			document.getElementById("accelerationX").innerHTML = e.acceleration.x;
 			document.getElementById("accelerationY").innerHTML = e.acceleration.y;
 			document.getElementById("accelerationZ").innerHTML = e.acceleration.z;	
@@ -121,8 +139,51 @@
 				document.body.style.backgroundColor = "white";
 				playing = false;
 			}
+      if (CONDUCTOR) {
+          var xEdit = 0.0;
+          var yEdit = 0.0;
+          xEdit = (x / (document.documentElement.clientWidth-20)) * 3.3;
+          yEdit = (y / (document.documentElement.clientHeight-20)) * 3.3;
+          document.getElementById("xPos").innerHTML = xEdit;
+          document.getElementById("yPos").innerHTML = yEdit;
+          firebase.database().ref("LFO").set({
+            value: xEdit
+          })
+          firebase.database().ref("VCF").set({
+            value: yEdit
+          })
+      }
 		}
+
+     setInterval( function() {
+      var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
+      if ( landscapeOrientation) {
+          vx = vx + ay;
+          vy = vy + ax;
+      } else {
+          vy = vy - ay;
+          vx = vx + ax;
+      }
+      vx = vx * 0.98;
+      vy = vy * 0.98;
+      y = parseInt(y + vy / 50);
+      x = parseInt(x + vx / 50);
+
+      boundingBoxCheck();
+
+      sphere.style.top = y + "px";
+      sphere.style.left = x + "px";
+
+    }, 25);
 	} 
+
+function boundingBoxCheck(){
+    if (x<0) { x = 0; /*vx = -vx;*/ }
+    if (y<0) { y = 0; /*vy = -vy;*/ }
+    if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; /*vx = -vx;*/ }
+    if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; /*vy = -vy;*/ }
+
+    }
 
   var slider = document.getElementById("myRange");
   var output = document.getElementById("sensitivity");
@@ -220,6 +281,14 @@
 }
 #a_sharp_key { 
   left: 85.5%;
+}
+#sphere {
+    position: absolute;    
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    -webkit-radius: 50px;
+    background-color: blue;
 }
 </style>
 
