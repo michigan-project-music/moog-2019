@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import firebase from 'firebase';
-
+import firebase from 'firebase/app';
+import 'firebase/database'; // If using Firebase database
+import 'firebase/storage';  // If using Firebase storage
 
 const config = {
 apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
@@ -34,6 +35,25 @@ class App extends Component {
 
    }
 
+    sendKeyVal() {
+      console.log("woww");
+
+      var database = firebase.database();
+
+      var key = document.getElementById("KEY").value;
+      var val = parseInt(document.getElementById("VALUE").value);
+
+
+      firebase.database().ref(key).set({
+
+        value: val
+
+      })
+   
+
+
+   }
+
   render() {
 
     firebase.initializeApp(config)
@@ -55,7 +75,10 @@ class App extends Component {
           </a>
 
           <button  onClick = {this.updateState}> Click 1</button>
-          <button> Click 2</button>
+          <input defaultValue="key" id = "KEY"/> 
+          <input type="number" defaultValue = "0" id = "VALUE"/> 
+
+          <button onClick = {this.sendKeyVal}> Send Key/Num Pair</button>
           <button> Click 3</button>
 
           <p>Text 1</p>
