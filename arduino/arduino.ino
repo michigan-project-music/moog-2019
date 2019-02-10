@@ -32,24 +32,6 @@ int PIN_VCO = 0;
 int PIN_LFO = 2;
 int PIN_GATE = 14;
 
-void setup() {
-  Serial.begin(115200);
-
-  // connect to wifi.
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println();
-  Serial.print("connected: ");
-  Serial.println(WiFi.localIP());
-  pinMode(PIN_GATE, OUTPUT);
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-  Firebase.stream("/");  
-}
-
 int end_time = 0;
 int start_time = 0;
 bool playing = false;
@@ -59,10 +41,51 @@ float VCO = 0;
 float VCF = 0;
 float LFO = 0;
 
+void setup() {
+  Serial.begin(115200);
+
+  // connect to wifi.
+  WiFi.setSleepMode(WIFI_NONE_SLEEP);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+  Serial.print("connected: ");
+  Serial.println(WiFi.localIP());
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.set("VCA", 0);
+  Firebase.set("VCO", 0);
+  Firebase.set("VCF", 0);
+  Firebase.set("LFO", 0);
+  Firebase.set("duration", 0);
+  Firebase.stream("/"); 
+}
+
+
 void loop() {
   if (Firebase.failed()) {
     Serial.println("streaming error");
     Serial.println(Firebase.error());
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("connecting");
+      WiFi.begin(WIFI_SSID, WIFI_PASSWORD); 
+    }
+    while (WiFi.status() != WL_CONNECTED) {
+      Serial.print(".");
+      delay(500);
+    }
+    Serial.print("connected: ");
+    Serial.println(WiFi.localIP());
+    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+    Firebase.set("VCA", 0);
+    Firebase.set("VCO", 0);
+    Firebase.set("VCF", 0);
+    Firebase.set("LFO", 0);
+    Firebase.set("duration", 0);
+    Firebase.stream("/"); 
   }
   
   if (Firebase.available()) {
@@ -94,7 +117,6 @@ void loop() {
         Serial.print("LFO: ");
         Serial.println(LFO);
       }
-      analogWrite(PIN_VCO, VCO);
       analogWrite(PIN_VCA, VCA);
       analogWrite(PIN_VCF, VCF);
       analogWrite(PIN_LFO, LFO);
@@ -103,13 +125,14 @@ void loop() {
   if (!playing && duration > 0) {
     playing = true;
     end_time = millis() + duration;
-    digitalWrite(PIN_GATE, HIGH);
+    analogWrite(PIN_VCO, VCO);
+    analogWrite(PIN_GATE, 1023);
     duration = 0;
   }
   if (playing && millis() >= end_time) {
     playing = false;
     end_time = 0;
-    digitalWrite(PIN_GATE, LOW);
+    analogWrite(PIN_GATE, 0);
     Firebase.setInt("/duration/value", 0);
   }
 }

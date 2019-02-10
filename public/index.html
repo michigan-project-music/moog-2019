@@ -3,142 +3,166 @@
 <head>
 <title>Accelerometer Javascript Test</title>
 <meta name="viewport" content="width=device-width,user-scalable=yes" />
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="./style.css">
 <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script>	
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script> 
 </head>
 
 <body>
-<div id="content">
-    <h1>Accelerometer Javascript Test</h1>
     <div id="sphere"></div>
-<ul>
-	<li>acceleration x: <span id="accelerationX"></span>g</li>
-	<li>acceleration y: <span id="accelerationY"></span>g</li>
-	<li>acceleration z: <span id="accelerationZ"></span>g</li>
-	<li>start time: <span id="timeStart"></span>g</li>
-	<li>current time: <span id="currentTime"></span>g</li>
-</ul>
-
-
-
-<div class="container">
-
-  <p id = "note"> Note: C </p>
-  <p id = "octave"> Octave: First </p>
-
-
-  <img src="piano.jpeg" alt="Snow">
-
-  <button class="btn" id = "c_key" onclick="change_text('C')">C</button>
-  <button class="btn" id = "d_key" onclick="change_text('D')"">D</button>
-  <button class="btn" id = "e_key" onclick="change_text('E')"">E</button>
-  <button class="btn" id = "f_key" onclick="change_text('F')"">F</button>
-  <button class="btn" id = "g_key" onclick="change_text('G')"">G</button>
-  <button class="btn" id = "a_key" onclick="change_text('A')"">A</button>
-  <button class="btn" id = "b_key" onclick="change_text('B')"">B</button>
-
-    <button class="black_btn" id = "c_sharp_key" onclick="change_text('C# / D♭')"></button>
-    <button class="black_btn" id = "d_sharp_key" onclick="change_text('D# / E♭')"></button>
-    <button class="black_btn" id = "f_sharp_key" onclick="change_text('F# / G♭')"></button>
-    <button class="black_btn" id = "g_sharp_key" onclick="change_text('G# / A♭')"></button>
-    <button class="black_btn" id = "a_sharp_key" onclick="change_text('A# / B♭')"></button>
-
-
-
-</div>
-
-  <button onclick="change_octave(1)">First Octave</button>
-  <button onclick="change_octave(2)">Second Octave</button>
-  <button onclick="change_octave(3)">Third Octave</button>
-
-
-
-
-<span id="slide"></span>
-</div>
-<div class="slidecontainer">
-  <p><br><br></p>
-  <p>Sensitivity: <span id="sensitivity"></span></p>
-  <input type="range" min="5" max="20" value="9" step="0.1" class="slider" id="myRange">
-</div>
-
-<div class="rotation">
+<div class="header">
+    <h1>Instrument Name</h1>
   <p>x: <span id="xPos"></span>degrees</p>
   <p>y: <span id="yPos"></span>degrees</p>
 </div>
 
 
+
+<div class="container">
+
+  <img src="piano.jpeg" alt="Snow">
+
+  <button class="btn" id = "c_key" onclick="change_note('C', this.id)">C</button>
+  <button class="btn" id = "d_key" onclick="change_note('D', this.id)">D</button>
+  <button class="btn" id = "e_key" onclick="change_note('E', this.id)">E</button>
+  <button class="btn" id = "f_key" onclick="change_note('F', this.id)">F</button>
+  <button class="btn" id = "g_key" onclick="change_note('G', this.id)">G</button>
+  <button class="btn" id = "a_key" onclick="change_note('A', this.id)">A</button>
+  <button class="btn" id = "b_key" onclick="change_note('B', this.id)">B</button>
+
+  <button class="black_btn" id = "c_sharp_key" onclick="change_note('C# / D♭', this.id)"></button>
+  <button class="black_btn" id = "d_sharp_key" onclick="change_note('D# / E♭', this.id)"></button>
+  <button class="black_btn" id = "f_sharp_key" onclick="change_note('F# / G♭', this.id)"></button>
+  <button class="black_btn" id = "g_sharp_key" onclick="change_note('G# / A♭', this.id)"></button>
+  <button class="black_btn" id = "a_sharp_key" onclick="change_note('A# / B♭', this.id)"></button>
+
+</div>
+<div class="octave">
+  <button id="octave-one-button" onclick="change_octave(0)">First Octave</button>
+  <button id="octave-two-button" onclick="change_octave(1)">Second Octave</button>
+  <button id="octave-three-button" onclick="change_octave(2)">Third Octave</button>
+</div>
+
+<span id="slide"></span>
+
+<div class="slidecontainer">
+  <p><br><br></p>
+  <p>Sensitivity: <span id="sensitivity"></span></p>
+  <input type="range" min="7" max="17" value="10" step="0.1" class="slider" id="myRange">
+</div>
+</body>
+
 <script type="text/javascript">
-	const DURATION_MILLIS = 350;
-	let SENSITIVITY = 9;
+  const NOTE_CONVERSION = {
+    'C': 0,
+    'C# / D♭': 0.08333333333,
+    'D': 0.1666666667,
+    'D# / E♭': 0.25,
+    'E': 0.3333333333,
+    'F': 0.4166666667,
+    'F# / G♭': 0.5,
+    'G': 0.5833333333,
+    'G# / A♭': 0.6666666667,
+    'A': 0.75,
+    'A# / B♭': 0.8333333333,
+    'B': 0.9166666667
+  }
+  const DURATION_MILLIS = 350;
+  let SENSITIVITY = 5;
   let CONDUCTOR = true;
-	let playing = false;
-	let time_start = Number.MAX_SAFE_INTEGER - 2000;
-	var config = {
-	    apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
-	    authDomain: "test-playground-b36c0.firebaseapp.com",
-	    databaseURL: "https://test-playground-b36c0.firebaseio.com",
-	    projectId: "test-playground-b36c0",
-	    storageBucket: "test-playground-b36c0.appspot.com",
-	    messagingSenderId: "103494638490"
-  	};
-	firebase.initializeApp(config);
-	document.getElementById("timeStart").innerHTML = time_start;	
-	document.getElementById("currentTime").innerHTML = Date.now();	
+  let playing = false;
+  let time_start = Number.MAX_SAFE_INTEGER - 2000;
+  var note = null;
+  var note_id = "c_key";
+  var octave = 2;
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("sensitivity");
+  var x = 0;
+  var y = 0;
+  var vx = 0;
+  var vy = 0;
+  var ax = 0;
+  var ay = 0;
+  var sphere = document.getElementById("sphere");
+  output.innerHTML = slider.value; // Display the default slider value
+  var config = {
+      apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
+      authDomain: "test-playground-b36c0.firebaseapp.com",
+      databaseURL: "https://test-playground-b36c0.firebaseio.com",
+      projectId: "test-playground-b36c0",
+      storageBucket: "test-playground-b36c0.appspot.com",
+      messagingSenderId: "103494638490"
+    };
 
-var x = 0;
-var y = 0;
-var vx = 0;
-var vy = 0;
-var ax = 0;
-var ay = 0;
-
-var sphere = document.getElementById("sphere");
-
-
-	var note = "C";
-	var octave = 1;
-	function change_text(val) {
-			note = val;
-		  document.getElementById("note").innerHTML = "Note: " + val;
-				
-	}
-	function change_octave(val) {
-		  octave = val;
-		 if (val == 1){
-		  document.getElementById("octave").innerHTML = "Octave: First";
-		}else if (val == 2){
-		 document.getElementById("octave").innerHTML = "Octave: Second";
-		}else{
-		document.getElementById("octave").innerHTML = "Octave: Third";
-		}
-				
-	}
+  firebase.initializeApp(config);
 
 
-	if (window.DeviceMotionEvent != undefined) {
-		window.ondevicemotion = function(e) {
+  var noteControl = firebase.database().ref('noteControl');
+    noteControl.on('value', function(snapshot) {
+      if (snapshot.val() && snapshot.val().octave && snapshot.val().octave == octave && snapshot.val().note && snapshot.val().note == note) {
+        console.log("jgiaoejg")
+      }
+  });
+
+  function change_note(val, id) {
+    if (note && note.length > 1) {
+      document.getElementById(note_id).style.setProperty("background-color", "#4C4C4C", "important");
+    }
+    else {
+      document.getElementById(note_id).style.setProperty("background-color", "#d9d9d9", "important");
+    }
+    document.getElementById(id).style.setProperty("background-color", "#c1c1ec", "important");
+    note_id = id;
+    note = val;
+  }
+  function change_octave(val) {
+      octave = val;
+    document.getElementById("octave-one-button").style.backgroundColor = "white";
+    document.getElementById("octave-two-button").style.backgroundColor = "white";
+    document.getElementById("octave-three-button").style.backgroundColor = "white";
+    document.getElementById("octave-one-button").style.background = "none";
+    document.getElementById("octave-two-button").style.background = "none";
+    document.getElementById("octave-three-button").style.background = "none";
+    if (val == 0){
+      document.getElementById("octave-one-button").style.backgroundColor = "#c1c1ec";
+    }
+    else if (val == 1){
+      document.getElementById("octave-two-button").style.backgroundColor = "#c1c1ec";
+    }
+    else{
+      document.getElementById("octave-three-button").style.backgroundColor = "#c1c1ec";
+    } 
+  }
+
+  if (window.DeviceMotionEvent != undefined) {
+    window.ondevicemotion = function(e) {
       ax = event.accelerationIncludingGravity.x * 5;
       ay = event.accelerationIncludingGravity.y * 5;
-			document.getElementById("accelerationX").innerHTML = e.acceleration.x;
-			document.getElementById("accelerationY").innerHTML = e.acceleration.y;
-			document.getElementById("accelerationZ").innerHTML = e.acceleration.z;	
-			document.getElementById("timeStart").innerHTML = time_start;	
-			document.getElementById("currentTime").innerHTML = Date.now();	
-			if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) {
-				time_start = Date.now();
-				playing = true;
-				document.body.style.backgroundColor = "red";
-				firebase.database().ref("duration").set({
-					value: 300
-				})
-			}
-			else if (playing && (Date.now() >= time_start + DURATION_MILLIS)) {
-				document.body.style.backgroundColor = "white";
-				playing = false;
-			}
+      if (!CONDUCTOR) {
+        if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) {
+          if (!note) {
+            window.navigator.vibrate([1000, 100, 1000]);
+            alert("Please select a note!");
+          }
+          else {
+            time_start = Date.now();
+            playing = true;
+            document.body.style.backgroundColor = "aquamarine";
+            firebase.database().ref("VCO").set({
+              value: octave + NOTE_CONVERSION[note]
+            })
+            firebase.database().ref("duration").set({
+              value: DURATION_MILLIS
+            })
+            window.navigator.vibrate(DURATION_MILLIS);
+          }
+        }
+        else if (playing && (Date.now() >= time_start + DURATION_MILLIS)) {
+          document.body.style.backgroundColor = "white";
+          playing = false;
+        }
+      }
       if (CONDUCTOR) {
           var xEdit = 0.0;
           var yEdit = 0.0;
@@ -153,7 +177,7 @@ var sphere = document.getElementById("sphere");
             value: yEdit
           })
       }
-		}
+    }
 
      setInterval( function() {
       var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
@@ -175,19 +199,13 @@ var sphere = document.getElementById("sphere");
       sphere.style.left = x + "px";
 
     }, 25);
-	} 
-
-function boundingBoxCheck(){
+  }
+  function boundingBoxCheck(){
     if (x<0) { x = 0; /*vx = -vx;*/ }
     if (y<0) { y = 0; /*vy = -vy;*/ }
     if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; /*vx = -vx;*/ }
     if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; /*vy = -vy;*/ }
-
-    }
-
-  var slider = document.getElementById("myRange");
-  var output = document.getElementById("sensitivity");
-  output.innerHTML = slider.value; // Display the default slider value
+  }
 
   // Update the current slider value (each time you drag the slider handle)
   slider.oninput = function() {
@@ -198,10 +216,91 @@ function boundingBoxCheck(){
 </script>
 
 <style>
+.header {
+  font-family:"Courier";
+  text-align:center;
+}
+
+.slidecontainer {
+  width: 100vw; /* Width of the outside container */
+  position:absolute;
+  left:50;
+  right:50;
+}
+
+.slidecontainer p {
+  font-family:sans-serif;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+.black_btn {
+  background-color:#494949 !important;
+  transform:translate(-50%, -70%) !important;
+}
+.container .btn {
+  background-color:#eaeaea !important;
+  width:8.5% !important;
+  padding:0 !important;
+}
+.octave {
+  display:table;
+  margin-left:auto;
+  margin-right:auto;
+}
+.octave button {
+  background:none;
+  border-radius:0px !important;
+  padding:10px;
+  transition: background-color 0.3s ease;
+}
+
+/* The slider itself */
+.slider {
+  bottom:0;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+    width: 80vw;
+    margin-left: 10vw;
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+#octave-two-button {
+  background:#c1c1ec;
+}
 .container {
   position: relative;
   width: 100%;
   max-width: 400px;
+  margin-left:auto;
+  margin-right:auto;
+  border-left:2px black solid;
 }
 .container img {
   width: 100%;
@@ -243,7 +342,7 @@ function boundingBoxCheck(){
   background-color: #707070;
 }
 .container .btn:hover {
-	
+  
   background-color: #cccccc;
 }
 #c_key { 
@@ -282,6 +381,7 @@ function boundingBoxCheck(){
 #a_sharp_key { 
   left: 85.5%;
 }
+
 #sphere {
     position: absolute;    
     width: 50px;
