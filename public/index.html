@@ -26,6 +26,7 @@
   <div id="player-mode">
     <div class="header">
       <h1>Instrument Name</h1>
+      <h2 id ="Letter"> </h2>
     </div>
     <div class="container" id="container">
 
@@ -147,6 +148,18 @@
       document.getElementById("octave-three-button").style.backgroundColor = "#c1c1ec";
     }
   }
+  /*
+  var Letter_val = firebase.database().ref('Letter');
+  Letter_val.once('value', function (snapshot) {
+    document.getElementById("Letter").innerHTML = snapshot.val().value;
+  });
+*/
+  var noteControl = firebase.database().ref('Letter');
+  noteControl.on('value', function (snapshot) {
+  if (snapshot.val()) {
+    document.getElementById("Letter").innerHTML = snapshot.val().value;
+    }
+  });
 
   if (window.DeviceMotionEvent != undefined) {
     var phoneXCenter = document.documentElement.clientWidth / 2;
