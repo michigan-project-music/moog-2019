@@ -96,6 +96,22 @@
     'A# / B♭': 0.8333333333,
     'B': 0.9166666667
   }
+
+  const NOTE_CONVERSION_REVERSE = {
+    0: "C",
+    0.08333333333: 'C# / D♭',
+    0.1666666667: 'D',
+    0.25: 'D# / E♭',
+    0.3333333333: 'E',
+    0.4166666667: 'F',
+    0.5: 'F# / G♭',
+    0.5833333333: 'G',
+    0.6666666667: 'G# / A♭',
+    0.75: 'A',
+    0.8333333333: 'A# / B♭',
+    0.9166666667: 'B'
+  }
+
   const DURATION_MILLIS = 350;
   let SENSITIVITY = 5;
   let CONDUCTOR = false;
@@ -193,7 +209,7 @@
 
     var val = snapshot.val().value;
 
-      	console.log(val);
+      //	console.log(val);
 
 
     if (val >= 0 & val < 1){
@@ -213,6 +229,207 @@
 
 
 
+//weewoo
+
+var s = document.getElementById("div1");
+
+
+ var noteControl = firebase.database().ref('duration');
+
+  noteControl.on('value', function (snapshot) {
+
+  if (snapshot.val()) {
+
+
+    var note_array = snapshot.val().note;
+    var octave = snapshot.val().octave;
+    var delay = snapshot.val().value;
+
+
+
+
+    //change values;
+    octave = octave + 1;
+
+
+
+    var i;
+    for (i = note_array.length - 1; i >= 0; i--) { 
+
+     var note = NOTE_CONVERSION_REVERSE[note_array[i]];
+
+  
+
+    if (note == "C"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white1.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white8.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white15.png';
+      }
+ 
+
+    }else if (note == "D"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white2.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white9.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white16.png';
+      }
+
+ 
+
+    }else if (note == "E"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white3.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white10.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white17.png';
+      }
+ 
+
+    }else if (note == "F"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white4.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white11.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white18.png';
+      }
+
+      
+
+    }else if (note == "G"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white5.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white12.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white19.png';
+      }
+
+      
+
+    }else if (note == "A"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white6.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white13.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white20.png';
+      }
+
+       
+    }else if (note == "B"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='white7.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='white14.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='white21.png';
+      }
+ 
+
+    }else if (note == "C# / D♭"){
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='black1.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='black6.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='black11.png';
+      }
+
+    }else if (note == "D# / E♭"){
+
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='black2.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='black7.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='black12.png';
+      }
+
+    }else if (note == "F# / G♭"){
+
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='black3.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='black8.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='black13.png';
+      }
+
+    }else if (note == "G# / A♭"){
+
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='black4.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='black9.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='black14.png';
+      }
+
+    }else if (note == "A# / B♭"){
+
+
+      if (octave == 1){
+        document.getElementById('piano_visual').src='black5.png';
+      }else if (octave == 2){
+        document.getElementById('piano_visual').src='black10.png';
+      }else if (octave == 3){
+        document.getElementById('piano_visual').src='black15.png';
+      }
+
+    }
+
+
+                // create a closure to preserve the value of "i"
+          (function(i){
+
+            window.setTimeout(function(){
+              s.innerHTML = s.innerHTML + i.toString();
+            }, (note_array.length-i) * delay);
+
+          }(i));
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+  });
+
+
+
+//weeewoo
 
 
   var noteControl = firebase.database().ref('Letter');
@@ -223,6 +440,8 @@
 
 
     var note = snapshot.val().value;
+
+
 
 
     if (note == "C"){
@@ -485,7 +704,7 @@
 
       if (id == 0) { //if no conductor exist
         CONDUCTOR = true;
-        document.getElementById("conductor_text").innerHTML = "Conductor Mode";
+        document.getElementById("conductor_text").innerHTML = "Player Mode";
         firebase.database().ref("conductor").set({
           value: 1
         })
