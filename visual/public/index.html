@@ -35,7 +35,7 @@
   <div id="player-mode">
     <div class="header">
       <h1>Instrument Name</h1>
-      <h2 id ="Letter"> </h2>
+      <h2 id="Letter"> </h2>
     </div>
 
 
@@ -151,14 +151,14 @@
 
   var ballReadX = firebase.database().ref("LFO");
   ballReadX.on('value', function (snapshot) {
-  if (snapshot.val()) {
+    if (snapshot.val()) {
       var preX = snapshot.val().value;
       x = (preX / 3.3) * 300;
     }
   });
   var ballReadY = firebase.database().ref("VCF");
   ballReadY.on('value', function (snapshot) {
-  if (snapshot.val()) {
+    if (snapshot.val()) {
       var preY = snapshot.val().value;
       y = (preY / 3.3) * 400 + document.documentElement.clientHeight - 400;
     }
@@ -434,6 +434,7 @@ var s = document.getElementById("div1");
 
   var noteControl = firebase.database().ref('Letter');
   noteControl.on('value', function (snapshot) {
+<<<<<<< HEAD
 
   if (snapshot.val()) {
     document.getElementById("Letter").innerHTML = snapshot.val().value;
@@ -587,6 +588,10 @@ var s = document.getElementById("div1");
 
 
 
+=======
+    if (snapshot.val()) {
+      document.getElementById("Letter").innerHTML = snapshot.val().value;
+>>>>>>> f9900aef2acf66c356844189f8018110c43b4b47
     }
 
 
