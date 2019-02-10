@@ -123,6 +123,7 @@ void loop() {
   }   
     
   if (!playing && duration > 0) {
+    Serial.println("start note");
     playing = true;
     end_time = millis() + duration;
     analogWrite(PIN_VCO, VCO);
@@ -130,13 +131,13 @@ void loop() {
     duration = 0;
   }
   if (playing && millis() >= end_time) {
+    Serial.println("stop note");
     playing = false;
-    end_time = 0;
     analogWrite(PIN_GATE, 0);
     Firebase.setInt("/duration/value", 0);
   }
 }
 
 int convertVoltage(float voltage) {
-  return voltage * (1024/3.26);
+  return voltage * (1023/3.28);
 }

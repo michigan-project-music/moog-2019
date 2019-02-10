@@ -1,64 +1,68 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<title>Accelerometer Javascript Test</title>
-<meta name="viewport" content="width=device-width,user-scalable=yes" />
-<link rel="stylesheet" type="text/css" href="./style.css">
-<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script> 
+  <title>Accelerometer Javascript Test</title>
+  <meta name="viewport" content="width=device-width,user-scalable=yes" />
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 
+<div class="banner">
+  <p id="conductor_text">Player Mode</p>
+  <button id="conductor_button" onclick="click_conductor()"><i class="fas fa-lg fa-power-off"></i></button>
+</div>
+
 <body>
-    <div id="sphere"></div>
-<div class="header">
-    <h1>Instrument Name</h1>
-  <p>x: <span id="xPos"></span>degrees</p>
-  <p>y: <span id="yPos"></span>degrees</p>
-</div>
+  <div id="sphere"></div>
+
+  <div id="conductor-mode">
+    <img src="axes.png" alt="Snow">
+  </div>
+  <div id="player-mode">
+    <div class="header">
+      <h1>Instrument Name</h1>
+    </div>
+    <div class="container" id="container">
+
+      <img src="piano.jpeg" alt="Snow">
+
+      <button class="btn" id="c_key" onclick="change_note('C', this.id)">C</button>
+      <button class="btn" id="d_key" onclick="change_note('D', this.id)">D</button>
+      <button class="btn" id="e_key" onclick="change_note('E', this.id)">E</button>
+      <button class="btn" id="f_key" onclick="change_note('F', this.id)">F</button>
+      <button class="btn" id="g_key" onclick="change_note('G', this.id)">G</button>
+      <button class="btn" id="a_key" onclick="change_note('A', this.id)">A</button>
+      <button class="btn" id="b_key" onclick="change_note('B', this.id)">B</button>
+
+      <button class="black_btn" id="c_sharp_key" onclick="change_note('C# / D♭', this.id)"></button>
+      <button class="black_btn" id="d_sharp_key" onclick="change_note('D# / E♭', this.id)"></button>
+      <button class="black_btn" id="f_sharp_key" onclick="change_note('F# / G♭', this.id)"></button>
+      <button class="black_btn" id="g_sharp_key" onclick="change_note('G# / A♭', this.id)"></button>
+      <button class="black_btn" id="a_sharp_key" onclick="change_note('A# / B♭', this.id)"></button>
+
+    </div>
+
+    <div class="octave">
+      <button id="octave-one-button" onclick="change_octave(0)">First Octave</button>
+      <button id="octave-two-button" onclick="change_octave(1)">Second Octave</button>
+      <button id="octave-three-button" onclick="change_octave(2)">Third Octave</button>
 
 
+    </div>
+    <span id="slide"></span>
 
-<div class="container">
+    <div class="slidecontainer">
+      <p><br><br></p>
+      <p>Trigger Sensitivity: <span id="sensitivity"></span></p>
+      <input type="range" min="7" max="17" value="10" step="0.1" class="slider" id="myRange">
 
-  <img src="piano.jpeg" alt="Snow">
-
-  <button class="btn" id = "c_key" onclick="change_note('C', this.id)">C</button>
-  <button class="btn" id = "d_key" onclick="change_note('D', this.id)">D</button>
-  <button class="btn" id = "e_key" onclick="change_note('E', this.id)">E</button>
-  <button class="btn" id = "f_key" onclick="change_note('F', this.id)">F</button>
-  <button class="btn" id = "g_key" onclick="change_note('G', this.id)">G</button>
-  <button class="btn" id = "a_key" onclick="change_note('A', this.id)">A</button>
-  <button class="btn" id = "b_key" onclick="change_note('B', this.id)">B</button>
-
-  <button class="black_btn" id = "c_sharp_key" onclick="change_note('C# / D♭', this.id)"></button>
-  <button class="black_btn" id = "d_sharp_key" onclick="change_note('D# / E♭', this.id)"></button>
-  <button class="black_btn" id = "f_sharp_key" onclick="change_note('F# / G♭', this.id)"></button>
-  <button class="black_btn" id = "g_sharp_key" onclick="change_note('G# / A♭', this.id)"></button>
-  <button class="black_btn" id = "a_sharp_key" onclick="change_note('A# / B♭', this.id)"></button>
-
-</div>
-<div class="octave">
-  <button id="octave-one-button" onclick="change_octave(0)">First Octave</button>
-  <button id="octave-two-button" onclick="change_octave(1)">Second Octave</button>
-  <button id="octave-three-button" onclick="change_octave(2)">Third Octave</button>
-
-
-</div>
-
-
-  <button id = "conductor_button" onclick="click_conductor()"> Activate Conductor </button>
-  <p id="conductor_text">Conductor Mode: Off</p>
-  
-
-<span id="slide"></span>
-
-<div class="slidecontainer">
-  <p><br><br></p>
-  <p>Sensitivity: <span id="sensitivity"></span></p>
-  <input type="range" min="7" max="17" value="10" step="0.1" class="slider" id="myRange">
-
-</div>
+    </div>
+  </div>
 
 </body>
 
@@ -96,23 +100,23 @@
   var sphere = document.getElementById("sphere");
   output.innerHTML = slider.value; // Display the default slider value
   var config = {
-      apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
-      authDomain: "test-playground-b36c0.firebaseapp.com",
-      databaseURL: "https://test-playground-b36c0.firebaseio.com",
-      projectId: "test-playground-b36c0",
-      storageBucket: "test-playground-b36c0.appspot.com",
-      messagingSenderId: "103494638490"
-    };
+    apiKey: "AIzaSyDBFJtzxQgl3JkPKwOJCVCQEsqnp16J5OM",
+    authDomain: "test-playground-b36c0.firebaseapp.com",
+    databaseURL: "https://test-playground-b36c0.firebaseio.com",
+    projectId: "test-playground-b36c0",
+    storageBucket: "test-playground-b36c0.appspot.com",
+    messagingSenderId: "103494638490"
+  };
 
   firebase.initializeApp(config);
 
 
-  var noteControl = firebase.database().ref('noteControl');
-    noteControl.on('value', function(snapshot) {
-      if (snapshot.val() && snapshot.val().octave && snapshot.val().octave == octave && snapshot.val().note && snapshot.val().note == note) {
-        console.log("jgiaoejg")
-      }
-  });
+  // var noteControl = firebase.database().ref('noteControl');
+  // noteControl.on('value', function (snapshot) {
+  //   if (snapshot.val() && snapshot.val().octave && snapshot.val().octave == octave && snapshot.val().note && snapshot.val().note == note) {
+  //     console.log("jgiaoejg")
+  //   }
+  // });
 
   function change_note(val, id) {
     if (note && note.length > 1) {
@@ -126,32 +130,41 @@
     note = val;
   }
   function change_octave(val) {
-      octave = val;
+    octave = val;
     document.getElementById("octave-one-button").style.backgroundColor = "white";
     document.getElementById("octave-two-button").style.backgroundColor = "white";
     document.getElementById("octave-three-button").style.backgroundColor = "white";
     document.getElementById("octave-one-button").style.background = "none";
     document.getElementById("octave-two-button").style.background = "none";
     document.getElementById("octave-three-button").style.background = "none";
-    if (val == 0){
+    if (val == 0) {
       document.getElementById("octave-one-button").style.backgroundColor = "#c1c1ec";
     }
-    else if (val == 1){
+    else if (val == 1) {
       document.getElementById("octave-two-button").style.backgroundColor = "#c1c1ec";
     }
-    else{
+    else {
       document.getElementById("octave-three-button").style.backgroundColor = "#c1c1ec";
-    } 
+    }
   }
 
   if (window.DeviceMotionEvent != undefined) {
-    window.ondevicemotion = function(e) {
-      ax = event.accelerationIncludingGravity.x * 5;
-      ay = event.accelerationIncludingGravity.y * 5;
+    var phoneXCenter = document.documentElement.clientWidth / 2;
+    var phoneYCenter = document.documentElement.clientHeight / 2;
+    window.ondevicemotion = function (e) {
+      var aCenterX = 10;
+      var aCenterY = 10;
+      if (x > phoneXCenter) {
+        aCenterX = aCenterX * -1;
+      }
+      if (y < phoneYCenter) {
+        aCenterY = aCenterY * -1;
+      }
+      ax = event.accelerationIncludingGravity.x * 5 + aCenterX;
+      ay = event.accelerationIncludingGravity.y * 5 + aCenterY;
       if (!CONDUCTOR) {
         if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) {
           if (!note) {
-            window.navigator.vibrate([1000, 100, 1000]);
             alert("Please select a note!");
           }
           else {
@@ -173,29 +186,27 @@
         }
       }
       if (CONDUCTOR) {
-          var xEdit = 0.0;
-          var yEdit = 0.0;
-          xEdit = (x / (document.documentElement.clientWidth-20)) * 3.3;
-          yEdit = (y / (document.documentElement.clientHeight-20)) * 3.3;
-          document.getElementById("xPos").innerHTML = xEdit;
-          document.getElementById("yPos").innerHTML = yEdit;
-          firebase.database().ref("LFO").set({
-            value: xEdit
-          })
-          firebase.database().ref("VCF").set({
-            value: yEdit
-          })
+        var xEdit = 0.0;
+        var yEdit = 0.0;
+        xEdit = (x / (document.documentElement.clientWidth - 20)) * 3.3;
+        yEdit = (y / (document.documentElement.clientHeight - 20)) * 3.3;
+        firebase.database().ref("LFO").set({
+          value: xEdit
+        })
+        firebase.database().ref("VCF").set({
+          value: yEdit
+        })
       }
     }
 
-     setInterval( function() {
-      var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
-      if ( landscapeOrientation) {
-          vx = vx + ay;
-          vy = vy + ax;
+    setInterval(function () {
+      var landscapeOrientation = window.innerWidth / window.innerHeight > 1;
+      if (landscapeOrientation) {
+        vx = vx + ay;
+        vy = vy + ax;
       } else {
-          vy = vy - ay;
-          vx = vx + ax;
+        vy = vy - ay;
+        vx = vx + ax;
       }
       vx = vx * 0.98;
       vy = vy * 0.98;
@@ -209,87 +220,65 @@
 
     }, 25);
   }
-  function boundingBoxCheck(){
-    if (x<0) { x = 0; /*vx = -vx;*/ }
-    if (y<0) { y = 0; /*vy = -vy;*/ }
-    if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; /*vx = -vx;*/ }
-    if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; /*vy = -vy;*/ }
+  function boundingBoxCheck() {
+    if (x < 0) { x = 0; /*vx = -vx;*/ }
+    if (y < 0) { y = 0; /*vy = -vy;*/ }
+    if (x > document.documentElement.clientWidth - 20) { x = document.documentElement.clientWidth - 20; vx = -vx / 10; }
+    if (y > document.documentElement.clientHeight - 20) { y = document.documentElement.clientHeight - 20; vy = -vy / 10; }
+    if (y < 50) { y = 50; }
   }
 
   // Update the current slider value (each time you drag the slider handle)
-  slider.oninput = function() {
+  slider.oninput = function () {
     output.innerHTML = this.value;
     SENSITIVITY = this.value;
   }
 
   //activate conductor
 
-    function click_conductor() {
-
-  
-
-        if (CONDUCTOR){
-          console.log("turn off");
-
-            CONDUCTOR = false;
-
-            document.getElementById("conductor_text").innerHTML = "Conductor Mode: Off";
-           document.getElementById("conductor_button").innerHTML = "Activate Conductor";
-
-
-          firebase.database().ref("conductor").set({
-            value: 0
-           })
-          return;
-
-        }
-  
-     
-        var starCountRef = firebase.database().ref('conductor');
-        starCountRef.once('value', function(snapshot) {
-
-         
-           var id = snapshot.val().value;
-
-
-            console.log(id)
-
-            if (id == 0){ //if no conductor exist
-
-
-            CONDUCTOR = true;
-            document.getElementById("conductor_text").innerHTML = "Conductor Mode: On";
-            document.getElementById("conductor_button").innerHTML = "Disable Conductor";
-            firebase.database().ref("conductor").set({
-            value: 1
-           })
-
-
-           }else if (id == 1){ //if exist
-
-            if (!CONDUCTOR){
-              alert("Cannot be conductor! Conductor already exists.");
-            }  
-
-           }
-
-
-        });
-
-
-
-  }  
-
-
-  window.onbeforeunload = function(){
-
-   if (CONDUCTOR){
-
+  function click_conductor() {
+    if (CONDUCTOR) {
+      CONDUCTOR = false;
+      document.getElementById("conductor_text").innerHTML = "Player Mode";
       firebase.database().ref("conductor").set({
-            value: 0
-           })
-   }
+        value: 0
+      })
+      document.getElementById("sphere").style.setProperty("display", "none", "important");
+      document.getElementById("player-mode").style.setProperty("display", "block", "important");
+      document.getElementById("conductor-mode").style.setProperty("display", "none", "important");
+      return;
 
+    }
+    var conductor_val = firebase.database().ref('conductor');
+    conductor_val.once('value', function (snapshot) {
+      var id = snapshot.val().value;
+
+      if (id == 0) { //if no conductor exist
+        CONDUCTOR = true;
+        document.getElementById("conductor_text").innerHTML = "Conductor Mode";
+        firebase.database().ref("conductor").set({
+          value: 1
+        })
+        document.getElementById("sphere").style.setProperty("display", "block", "important");
+        document.getElementById("player-mode").style.setProperty("display", "none", "important");
+        document.getElementById("conductor-mode").style.setProperty("display", "block", "important");
+      } else if (id == 1) { //if exist
+        if (!CONDUCTOR) {
+          document.getElementById("sphere").style.setProperty("display", "none", "important");
+          document.getElementById("player-mode").style.setProperty("display", "block", "important");
+          document.getElementById("conductor-mode").style.setProperty("display", "none", "important");
+          alert("Cannot be conductor! Conductor already exists.");
+        }
+      }
+    });
+  }
+
+  window.onbeforeunload = function () {
+    if (CONDUCTOR) {
+      firebase.database().ref("conductor").set({
+        value: 0
+      })
+    }
   }
 
 
@@ -297,182 +286,269 @@
 </script>
 
 <style>
-.header {
-  font-family:"Courier";
-  text-align:center;
-}
+  body {
+    margin: 0px;
+    margin-top: 50px;
+    font-family: sans-serif;
+  }
 
-.slidecontainer {
-  width: 100vw; /* Width of the outside container */
-  position:absolute;
-  left:50;
-  right:50;
-}
+  .banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #00274c;
+    color: white;
+  }
 
-.slidecontainer p {
-  font-family:sans-serif;
-  margin-left:auto;
-  margin-right:auto;
-  text-align:center;
-}
-.black_btn {
-  background-color:#494949 !important;
-  transform:translate(-50%, -70%) !important;
-}
-.container .btn {
-  background-color:#eaeaea !important;
-  width:8.5% !important;
-  padding:0 !important;
-}
-.octave {
-  display:table;
-  margin-left:auto;
-  margin-right:auto;
-}
-.octave button {
-  background:none;
-  border-radius:0px !important;
-  padding:10px;
-  transition: background-color 0.3s ease;
-}
+  #conductor_text {
+    position: absolute;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+  }
 
-/* The slider itself */
-.slider {
-  bottom:0;
-  -webkit-appearance: none;  /* Override default CSS styles */
-  appearance: none;
+  #conductor_button {
+    position: absolute;
+    float: right;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: #ffcb05;
+    width: 10%;
+  }
+
+  .header {
+    font-family: "Courier";
+    text-align: center;
+  }
+
+  .slidecontainer {
+    width: 100vw;
+    /* Width of the outside container */
+    position: absolute;
+    left: 50;
+    right: 50;
+  }
+
+  .slidecontainer p {
+    font-family: sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+
+  .black_btn {
+    background-color: #494949 !important;
+    transform: translate(-50%, -70%) !important;
+  }
+
+  .container .btn {
+    background-color: #eaeaea !important;
+    width: 8.5% !important;
+    padding: 0 !important;
+  }
+
+  .octave {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .octave button {
+    background: none;
+    border-radius: 0px !important;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* The slider itself */
+  .slider {
+    bottom: 0;
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    appearance: none;
     width: 80vw;
     margin-left: 10vw;
-  height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
-}
+    height: 25px;
+    /* Specified height */
+    background: #d3d3d3;
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
 
-/* Mouse-over effects */
-.slider:hover {
-  opacity: 1; /* Fully shown on mouse-over */
-}
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1;
+    /* Fully shown on mouse-over */
+  }
 
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #4CAF50;
+    /* Green background */
+    cursor: pointer;
+    /* Cursor on hover */
+  }
 
-.slider::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
-#octave-two-button {
-  background:#c1c1ec;
-}
-.container {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  margin-left:auto;
-  margin-right:auto;
-  border-left:2px black solid;
-}
-.container img {
-  width: 100%;
-  height: auto;
-}
-.container .btn {
-  position: absolute;
-  top: 82.5%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  background-color: #d9d9d9;
-  color: black;
-  font-size: 16px;
-  width: 5%;
-  height: 27.5%;
-  padding: 12px 24px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  text-align: center;
-}
-.black_btn {
-  position: absolute;
-  top: 42.5%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  background-color: #4C4C4C;
-  color: white;
-  font-size: 16px;
-  width: 2.5%;
-  height: 45%;
-  padding: 4px 12px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  text-align: center;
-}
-.black_btn:hover {
-  background-color: #707070;
-}
-.container .btn:hover {
-  
-  background-color: #cccccc;
-}
-#c_key { 
-  left: 6%;
-}
-#d_key { 
-  left: 21%;
-}
-#e_key { 
-  left: 35%;
-}
-#f_key { 
-  left: 49.5%;
-}
-#g_key { 
-  left: 64%;
-}
-#a_key { 
-  left: 78.5%;
-}
-#b_key { 
-  left: 92.75%;
-}
-#c_sharp_key { 
-  left: 13.75%;
-}
-#d_sharp_key { 
-  left: 28%;
-}
-#f_sharp_key { 
-  left: 56.75%;
-}
-#g_sharp_key { 
-  left: 71.25%;
-}
-#a_sharp_key { 
-  left: 85.5%;
-}
+  .slider::-moz-range-thumb {
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #4CAF50;
+    /* Green background */
+    cursor: pointer;
+    /* Cursor on hover */
+  }
 
-#sphere {
-    position: absolute;    
+  #octave-two-button {
+    background: #c1c1ec;
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 2px black solid;
+  }
+
+  .container img {
+    width: 100%;
+    height: auto;
+  }
+
+  .container .btn {
+    position: absolute;
+    top: 82.5%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: #d9d9d9;
+    color: black;
+    font-size: 16px;
+    width: 5%;
+    height: 27.5%;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .black_btn {
+    position: absolute;
+    top: 42.5%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: #4C4C4C;
+    color: white;
+    font-size: 16px;
+    width: 2.5%;
+    height: 45%;
+    padding: 4px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .black_btn:hover {
+    background-color: #707070;
+  }
+
+  .container .btn:hover {
+
+    background-color: #cccccc;
+  }
+
+  #c_key {
+    left: 6%;
+  }
+
+  #d_key {
+    left: 21%;
+  }
+
+  #e_key {
+    left: 35%;
+  }
+
+  #f_key {
+    left: 49.5%;
+  }
+
+  #g_key {
+    left: 64%;
+  }
+
+  #a_key {
+    left: 78.5%;
+  }
+
+  #b_key {
+    left: 92.75%;
+  }
+
+  #c_sharp_key {
+    left: 13.75%;
+  }
+
+  #d_sharp_key {
+    left: 28%;
+  }
+
+  #f_sharp_key {
+    left: 56.75%;
+  }
+
+  #g_sharp_key {
+    left: 71.25%;
+  }
+
+  #a_sharp_key {
+    left: 85.5%;
+  }
+
+  #sphere {
+    display: none;
+    position: absolute;
     width: 50px;
     height: 50px;
     border-radius: 50px;
     -webkit-radius: 50px;
     background-color: blue;
-}
+  }
+
+  #conductor-mode {
+    display: none;
+  }
+
+  #conductor-mode img {
+    display: table-cell;
+    height: 400px;
+    margin-top: 30%;
+    vertical-align: middle;
+  }
 </style>
 
 
 </body>
+
 </html>
