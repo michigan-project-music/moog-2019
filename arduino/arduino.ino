@@ -21,6 +21,10 @@ float VCA = 0;
 float VCO = 0;
 float VCF = 0;
 float LFO = 0;
+int octave = 0;
+int note_index = 0;
+StaticJsonBuffer<5000> jsonBuffer;
+String note_string;
 
 void setup() {
   Serial.begin(115200);
@@ -48,10 +52,10 @@ void setup() {
   Firebase.set("VCF", 0);
   Firebase.set("LFO", 0);
   Firebase.set("duration", 0);
-  int end_time = 0;
-  int start_time = 0;
-  bool playing = false;
-  int duration = 0;
+  end_time = 0;
+  start_time = 0;
+  playing = false;
+  duration = 0;
   Firebase.stream("/"); 
 }
 
@@ -76,10 +80,10 @@ void loop() {
     Firebase.set("VCF", 0);
     Firebase.set("LFO", 0);
     Firebase.set("duration", 0);
-    int end_time = 0;
-    int start_time = 0;
-    bool playing = false;
-    int duration = 0;
+    end_time = 0;
+    start_time = 0;
+    playing = false;
+    duration = 0;
     Firebase.stream("/"); 
   }
   
@@ -87,13 +91,21 @@ void loop() {
       FirebaseObject event = Firebase.readEvent();
       String path = event.getString("path");
       Serial.println(path);
-      if (path == "/duration") {
+      if (path == "/duration" && !playing) {
+        jsonBuffer.clear();
+        start_time = 0;
+        end_time = 0;
+        playing = true;
+        
         duration = event.getFloat("data/value");
-        Serial.print("DUR: ");
-        Serial.println(duration);
-        VCO = convertVoltage(event.getFloat("data/note"));
-        Serial.print("VCO2: ");
-        Serial.println(VCO);
+        
+        octave = event.getInt("data/octave");
+        note_string = "";
+        JsonArray &note_array = event.getJsonVariant("data/note");
+        note_index = note_array.size() - 1;
+        note_array.printTo(note_string);
+        Serial.println(note_string);
+        Serial.println("---");
       }
       else if (path == "/VCA") {
         VCA = convertVoltage(event.getFloat("data/value"));
@@ -107,11 +119,6 @@ void loop() {
         Serial.println(VCF);
         analogWrite(PIN_VCF, VCF);
       }
-//      else if (path == "/VCO") {
-//        VCO = convertVoltage(event.getFloat("data/value"));
-//        Serial.print("VCO: ");
-//        Serial.println(VCO);
-//      }
       else if (path == "/LFO") {
         LFO = convertVoltage(event.getFloat("data/value"));
         Serial.print("LFO: ");
@@ -120,21 +127,36 @@ void loop() {
       }
   }   
     
-  if (!playing && duration > 0) {
-    Serial.println("start note");
-    playing = true;
-    end_time = millis() + duration;
-    analogWrite(PIN_VCO, VCO);
-    analogWrite(PIN_GATE, 0);
-    delay(50);
-    analogWrite(PIN_GATE, 1023);
-    duration = 0;
-  }
-  if (playing && millis() >= end_time) {
-    Serial.println("stop note");
-    playing = false;
-    analogWrite(PIN_GATE, 0);
-    Firebase.setInt("/duration/value", 0);
+  if (playing) {
+
+    if (end_time <= millis()) {
+      if (note_index < 0) {
+        playing = false;
+        end_time = -1;
+        duration = 0;
+        analogWrite(PIN_GATE, 0);
+        Serial.println("___END NOTE___");
+      }
+      else {
+        JsonArray &note_array = jsonBuffer.parseArray(note_string);
+        float note = note_array[note_index];
+        Serial.println("---");
+        Serial.println(note);
+        Serial.println(octave);
+        Serial.println(duration);
+        end_time = millis() + duration;
+        analogWrite(PIN_VCO, convertVoltage(note + octave));
+        analogWrite(PIN_GATE, 1023);
+        note_index--;
+      }
+    }
+    
+//    end_time = millis() + duration;
+//    analogWrite(PIN_VCO, VCO);
+//    analogWrite(PIN_GATE, 0);
+//    delay(50);
+//    analogWrite(PIN_GATE, 1023);
+//    duration = 0;
   }
 }
 

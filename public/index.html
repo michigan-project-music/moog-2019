@@ -229,35 +229,22 @@
             alert("Please select a note!");
           }
           else {
-            if (!arpeggiate && note.length > 1) {
-              note_vals = note.map(function (i) { console.log(i); return NOTE_CONVERSION[i] });
-              note_vals.sort().reverse();
-              note_index = note_vals.length - 1;
-              arpeggiate = true;
-            }
-            else if (!arpeggiate && note.length == 1) {
-              note_vals = note.map(function (i) { console.log(i); return NOTE_CONVERSION[i] });
-              note_index = 0;
-            }
-            else if (arpeggiate) {
-              --note_index;
-              if (note_index == 0) {
-                arpeggiate = false;
-              }
-            }
+            note_vals = note.map(function (i) { return NOTE_CONVERSION[i] });
+            note_vals.sort();
             time_start = Date.now();
             playing = true;
             document.body.style.backgroundColor = "#" + ((1 << 24) * Math.random() | 0).toString(16);
-            firebase.database().ref("VCO").set({
-              value: octave + note_vals[note_index]
-            })
-            firebase.database().ref("Letter").set({
-              value: NOTE_CONVERSION_REVERSE[note_vals[note_index]]
-            })
+            // firebase.database().ref("VCO").set({
+            //   value: octave + note_vals[note_index]
+            // })
+            // firebase.database().ref("Letter").set({
+            //   value: NOTE_CONVERSION_REVERSE[note_vals[note_index]]
+            // })
             DURATION_MILLIS = Math.floor(DURATION_MILLIS) + Math.random();
             firebase.database().ref("duration").set({
               value: DURATION_MILLIS,
-              note: octave + note_vals[note_index]
+              octave: octave,
+              note: note_vals
             })
             window.navigator.vibrate(50);
           }
