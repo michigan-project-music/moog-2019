@@ -145,9 +145,19 @@
   }
 
   if (window.DeviceMotionEvent != undefined) {
+    var phoneXCenter = document.documentElement.clientWidth / 2;
+    var phoneYCenter = document.documentElement.clientHeight / 2;
     window.ondevicemotion = function(e) {
-      ax = event.accelerationIncludingGravity.x * 5;
-      ay = event.accelerationIncludingGravity.y * 5;
+      var aCenterX = 10;
+      var aCenterY = 10;
+      if(x > phoneXCenter){
+        aCenterX = aCenterX * -1;
+      }
+      if(y < phoneYCenter){
+        aCenterY = aCenterY * -1;
+      }
+      ax = event.accelerationIncludingGravity.x * 5 + aCenterX;
+      ay = event.accelerationIncludingGravity.y * 5 + aCenterY;
       if (!CONDUCTOR) {
         if ((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) {
           if (!note) {
@@ -191,6 +201,7 @@
      setInterval( function() {
       var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
       if ( landscapeOrientation) {
+          //TODO: make ball go to center for landscape
           vx = vx + ay;
           vy = vy + ax;
       } else {
@@ -212,8 +223,8 @@
   function boundingBoxCheck(){
     if (x<0) { x = 0; /*vx = -vx;*/ }
     if (y<0) { y = 0; /*vy = -vy;*/ }
-    if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; /*vx = -vx;*/ }
-    if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; /*vy = -vy;*/ }
+    if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; vx = -vx / 10; }
+    if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; vy = -vy / 10; }
   }
 
   // Update the current slider value (each time you drag the slider handle)
