@@ -88,9 +88,12 @@ void loop() {
       String path = event.getString("path");
       Serial.println(path);
       if (path == "/duration") {
-        duration = event.getInt("data/value");
+        duration = event.getFloat("data/value");
         Serial.print("DUR: ");
         Serial.println(duration);
+        VCO = convertVoltage(event.getFloat("data/note"));
+        Serial.print("VCO2: ");
+        Serial.println(VCO);
       }
       else if (path == "/VCA") {
         VCA = convertVoltage(event.getFloat("data/value"));
@@ -104,11 +107,11 @@ void loop() {
         Serial.println(VCF);
         analogWrite(PIN_VCF, VCF);
       }
-      else if (path == "/VCO") {
-        VCO = convertVoltage(event.getFloat("data/value"));
-        Serial.print("VCO: ");
-        Serial.println(VCO);
-      }
+//      else if (path == "/VCO") {
+//        VCO = convertVoltage(event.getFloat("data/value"));
+//        Serial.print("VCO: ");
+//        Serial.println(VCO);
+//      }
       else if (path == "/LFO") {
         LFO = convertVoltage(event.getFloat("data/value"));
         Serial.print("LFO: ");
@@ -122,6 +125,8 @@ void loop() {
     playing = true;
     end_time = millis() + duration;
     analogWrite(PIN_VCO, VCO);
+    analogWrite(PIN_GATE, 0);
+    delay(50);
     analogWrite(PIN_GATE, 1023);
     duration = 0;
   }
