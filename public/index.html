@@ -26,7 +26,6 @@
   <div id="player-mode">
     <div class="header">
       <h1>MoogJam</h1>
-      <h2 id="Letter"> </h2>
     </div>
     <div class="container" id="container">
 
@@ -226,11 +225,10 @@
       if (!CONDUCTOR) {
         if (((e.acceleration.x > SENSITIVITY || e.acceleration.y > SENSITIVITY || e.acceleration.y > SENSITIVITY) && (!playing)) || (arpeggiate && !playing)) {
           if (!note || note.length < 1) {
-            alert("Please select a note!");
           }
           else {
             note_vals = note.map(function (i) { return NOTE_CONVERSION[i] });
-            note_vals.sort();
+            note_vals.sort().reverse();
             time_start = Date.now();
             playing = true;
             document.body.style.backgroundColor = "#" + ((1 << 24) * Math.random() | 0).toString(16);
